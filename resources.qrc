@@ -1,0 +1,9 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+    <qresource prefix="/">
+        <file>resources/splash_logo.png</file>
+        <file>resources/mixer/knob.png</file>
+        <file>resources/mixer/slider_track.png</file>
+        <file>resources/mixer/slider_handle.png</file>
+    </qresource>
+</RCC>

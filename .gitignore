@@ -1,0 +1,19 @@
+# ----- Build directories and artifacts -----
+out/
+build/
+PSRstudio_cpp/
+.vs/
+ipch/
+CMakeUserPresets.json
+
+# ----- Compiler / linker intermediates dropped in the project root -----
+*.obj
+*.pdb
+*.exe
+*.lib
+*.ilk
+*.rc.bin
+RCa*
+
+# ----- OS / editor junk -----
+Thumbs.db

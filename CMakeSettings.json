@@ -1,0 +1,28 @@
+﻿{
+  "configurations": [
+    {
+      "name": "x64-Debug",
+      "generator": "Ninja",
+      "configurationType": "Debug",
+      "inheritEnvironments": [ "msvc_x64_x64" ],
+      "buildRoot": "${projectDir}\\out\\build\\${name}",
+      "installRoot": "${projectDir}\\out\\install\\${name}",
+      "cmakeCommandArgs": "",
+      "buildCommandArgs": "",
+      "ctestCommandArgs": "",
+      "variables": [
+        {
+          "name": "Qt6_DIR",
+          "value": "C:/Qt/6.11.2/msvc2022_64/lib/cmake/Qt6",
+          "type": "PATH"
+        },
+        {
+          "name": "VST3_SDK_ROOT",
+          "value": "C:/vst3sdk",
+          "type": "PATH"
+        }
+      ],
+      "cmakeToolchain": "C:/Program Files/Microsoft Visual Studio/18/Insiders/VC/vcpkg/scripts/buildsystems/vcpkg.cmake"
+    }
+  ]
+}
