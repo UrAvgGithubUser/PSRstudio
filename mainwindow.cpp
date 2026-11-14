@@ -1575,8 +1575,9 @@ void MainWindow::refreshRemapCombo() {
     remap_combo_->clear();
     remap_paths_.clear();
 
-    // Item 0 is always the built-in I455 defaults (empty path).
-    remap_combo_->addItem(QStringLiteral("<built-in I455 defaults>"));
+    // Item 0 is always "no remap" (empty path — voices pass through
+    // to the destination unchanged).
+    remap_combo_->addItem(QStringLiteral("<no remap>"));
     remap_paths_.emplace_back();
 
     // Scan the remaps folder for .remap files.
@@ -1598,7 +1599,7 @@ void MainWindow::refreshRemapCombo() {
 
     // Auto-load default.remap if it exists. Otherwise, leave the combobox
     // on the built-in defaults (item 0) — but the remap_ object may have
-    // already been initialized with the I455 defaults by its constructor,
+    // already been initialized (fallback rules only) by its constructor,
     // so we don't need to do anything special.
     if (default_idx > 0) {
         remap_combo_->setCurrentIndex(default_idx);
@@ -1746,7 +1747,7 @@ void MainWindow::updateRemapStatusLabel() {
     QString text;
     if (remap_.source_path().empty()) {
         if (remap_.name().empty()) {
-            text = QStringLiteral("Built-in I455 defaults");
+            text = QStringLiteral("No remap (voices pass through)");
         } else {
             text = QString::fromUtf8(remap_.name());
         }

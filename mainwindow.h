@@ -440,7 +440,7 @@ private:
     QPushButton* remap_reload_        = nullptr;  // re-scan remaps folder
     QLabel*      remap_status_        = nullptr;  // shows "name — N entries"
     // Cached list of remap file paths parallel to remap_combo_ items.
-    // Item 0 is always "<built-in I455 defaults>" with an empty path.
+    // Item 0 is always "<no remap>" with an empty path.
     std::vector<std::filesystem::path> remap_paths_;
     // Folder scanned at startup. Defaults to
     //   <Documents>/PSRstudio/remaps  (Qt: QStandardPaths::DocumentsLocation)

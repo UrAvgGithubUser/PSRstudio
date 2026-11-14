@@ -43,7 +43,7 @@ namespace prs {
 // =========================================================
 class VoiceRemap final : public RemapSource {
 public:
-    // Constructs with the default PSR-I455 remap table populated
+    // Constructs with only the fallback rules (no voice remapping)
     // AND MONTAGE mode disabled (for hardware MIDI / GM soundfonts).
     VoiceRemap();
 
@@ -160,7 +160,6 @@ private:
                 static_cast<std::uint32_t>(pc);
     }
 
-    void load_defaults();
     void load_default_fallbacks();
 
     std::unordered_map<std::uint32_t, RemapEntry> entries_;

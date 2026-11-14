@@ -18,7 +18,6 @@ namespace prs {
     // =========================================================
     VoiceRemap::VoiceRemap() {
         load_default_fallbacks();
-        load_defaults();
     }
 
     // =========================================================
@@ -68,86 +67,13 @@ namespace prs {
         set_fallback(104, { 0, 0,   PcMode::Keep,   0 });
         // bank 126 → (127, 0, FIXED=1) — SFX perc → Standard Kit 1
         set_fallback(126, { 127, 0, PcMode::Fixed, 1 });
-        // bank 127 → (127, 0, FIXED=1) — unknown drum kits → Standard Kit 1
-        // Any drum kit PC not in the explicit table gets mapped to Standard
-        // Kit 1 so the I455 always plays a valid drum kit.
+        // bank 127 → (127, 0, FIXED=1) — unknown drum kits → Standard Kit 1.
+        // Any drum kit PC not in the explicit table gets mapped to
+        // Standard Kit 1 so the destination always plays a valid kit.
         set_fallback(127, { 127, 0, PcMode::Fixed, 1 });
         // bank 0 → no rule (passes through unchanged — GM voices)
     }
 
-    // =========================================================
-    //  Default PSR-I455 remap table
-    //  (same ~50 entries as the fallback table)
-    // =========================================================
-    void VoiceRemap::load_defaults() {
-        // ---- Yamaha internal voices (bank 8) → XGlite ----
-        add(8, 0, 1, 0, 0, 1, "Grand Piano");
-        add(8, 0, 2, 0, 0, 2, "Bright Piano");
-        add(8, 0, 3, 0, 0, 3, "Electric Grand Piano");
-        add(8, 0, 17, 0, 0, 17, "Drawbar Organ");
-        add(8, 0, 18, 0, 112, 17, "Perc Organ -> Jazz Organ 1");
-        add(8, 0, 49, 0, 112, 49, "String Ensemble");
-        add(8, 0, 50, 0, 112, 50, "Chamber Strings");
-        add(8, 0, 52, 0, 0, 53, "Choir Aahs");
-        add(8, 1, 3, 0, 0, 3, "Electric Grand Piano var");
-        add(8, 1, 18, 0, 113, 17, "Perc Organ -> Jazz Organ 2");
-        add(8, 1, 19, 0, 112, 19, "Rock Organ");
-        add(8, 1, 49, 0, 112, 49, "String Ensemble");
-        add(8, 1, 50, 0, 113, 50, "Slow Strings");
-        add(8, 2, 4, 0, 0, 4, "Honky-tonk Piano");
-        add(8, 2, 18, 0, 112, 17, "Org -> Jazz Organ 1");
-        add(8, 3, 4, 0, 0, 4, "Honky-tonk Piano var");
-        add(8, 4, 4, 0, 0, 4, "Honky-tonk Piano var2");
-        add(8, 4, 50, 0, 113, 50, "Strings -> Slow Strings");
-        add(8, 6, 4, 0, 0, 4, "Honky-tonk Piano var3");
-        add(8, 81, 113, 0, 0, 79, "Deduk/Whistle -> Ocarina");
-
-        // ---- SFF2 extension voices (bank 104) → XGlite ----
-        add(104, 0, 13, 0, 0, 13, "Marimba");
-        add(104, 0, 52, 0, 0, 53, "Choir Aahs");
-        add(104, 0, 89, 0, 0, 89, "New Age Pad");
-        add(104, 0, 96, 0, 0, 96, "Sweep Pad");
-        add(104, 1, 18, 0, 113, 17, "Org -> Jazz Organ 2");
-        add(104, 1, 19, 0, 112, 19, "Rock Organ");
-        add(104, 1, 39, 0, 116, 39, "Synth Bass");
-        add(104, 2, 51, 0, 0, 51, "Synth Strings");
-        add(104, 2, 90, 0, 0, 90, "Warm Pad");
-        add(104, 3, 22, 0, 113, 22, "Trad. Accordion");
-        add(104, 3, 90, 0, 0, 90, "Warm Pad var");
-        add(104, 4, 91, 0, 0, 91, "Poly Synth Pad");
-        add(104, 8, 39, 0, 116, 39, "Synth Bass var");
-        add(104, 9, 82, 0, 124, 82, "Sawtooth -> Analog Lead");
-        add(104, 10, 89, 0, 0, 89, "New Age Pad var");
-        add(104, 21, 39, 0, 116, 39, "BsSynth -> I455 Synth Bass");
-
-        // ---- GM LSB variant ----
-        add(0, 110, 18, 0, 0, 18, "Perc Organ (LSB110) -> XGlite");
-
-        // ---- Genos2 voices (bank 11) → XGlite ----
-        add(11, 0, 49, 0, 0, 49, "Genos2 Strings -> XGlite");
-        add(11, 0, 50, 0, 0, 50, "Genos2 Strings2 -> XGlite");
-        add(11, 0, 52, 0, 0, 53, "Genos2 Choir -> XGlite Choir Aahs");
-        add(11, 0, 53, 0, 0, 53, "Genos2 Choir var -> XGlite Choir Aahs");
-        add(11, 0, 89, 0, 0, 89, "Genos2 Pad -> XGlite New Age Pad");
-        add(11, 0, 90, 0, 0, 90, "Genos2 Pad2 -> XGlite Warm Pad");
-        add(11, 0, 91, 0, 0, 91, "Genos2 Pad3 -> XGlite Poly Synth");
-
-        // ---- Drum kit remaps (bank 127 → bank 127, different PC) ----
-        add(127, 0, 28, 127, 0, 1, "Kit -> Standard Kit 1");
-        add(127, 0, 42, 127, 0, 41, "Kit -> Brush Kit");
-        add(127, 0, 61, 127, 0, 9, "Kit -> Room Kit");
-        add(127, 0, 90, 127, 0, 88, "Kit -> Power Kit");
-        add(127, 0, 91, 127, 0, 25, "Kit -> Electronic Kit");
-        add(127, 0, 92, 127, 0, 26, "Kit -> Analog Kit");
-
-        // ---- SFX percussion kits (bank 126) → bank 127 (I455 drum kits) ----
-        // The I455 does NOT support bank 126 (SFX). All SFX kits must be
-        // remapped to bank 127 (standard XG drum kit bank) with a PC the
-        // I455 actually has.
-        add(126, 0, 44, 127, 0, 1, "Perc kit -> Standard Kit 1");
-        add(126, 0, 68, 127, 0, 1, "Genos2 perc -> Standard Kit 1");
-        add(126, 9, 51, 127, 0, 26, "Genos2 Cinema drum -> Analog Kit");
-    }
 
     // =========================================================
     //  find — tier-1 explicit lookup only
