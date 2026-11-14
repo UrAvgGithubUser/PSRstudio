@@ -17,7 +17,6 @@ namespace prs {
     //  Constructor — populates defaults
     // =========================================================
     VoiceRemap::VoiceRemap() {
-        load_default_fallbacks();
     }
 
     // =========================================================
@@ -40,38 +39,6 @@ namespace prs {
 
     void VoiceRemap::clear() {
         entries_.clear();
-    }
-
-    // =========================================================
-    //  Tier-2 fallback rules
-    // =========================================================
-    void VoiceRemap::set_fallback(u8 src_msb, FallbackRule rule) {
-        fallbacks_[src_msb] = rule;
-    }
-
-    void VoiceRemap::remove_fallback(u8 src_msb) {
-        fallbacks_.erase(src_msb);
-    }
-
-    void VoiceRemap::clear_fallbacks() {
-        fallbacks_.clear();
-    }
-
-    // =========================================================
-    //  Default fallback rules (matching the fallback table's tier-2 logic)
-    // =========================================================
-    void VoiceRemap::load_default_fallbacks() {
-        // bank 8, 11, 104 → (0, 0, KEEP) — XG/Genos/SFF2 voices → GM
-        set_fallback(8, { 0, 0,   PcMode::Keep,   0 });
-        set_fallback(11, { 0, 0,   PcMode::Keep,   0 });
-        set_fallback(104, { 0, 0,   PcMode::Keep,   0 });
-        // bank 126 → (127, 0, FIXED=1) — SFX perc → Standard Kit 1
-        set_fallback(126, { 127, 0, PcMode::Fixed, 1 });
-        // bank 127 → (127, 0, FIXED=1) — unknown drum kits → Standard Kit 1.
-        // Any drum kit PC not in the explicit table gets mapped to
-        // Standard Kit 1 so the destination always plays a valid kit.
-        set_fallback(127, { 127, 0, PcMode::Fixed, 1 });
-        // bank 0 → no rule (passes through unchanged — GM voices)
     }
 
 
@@ -99,18 +66,6 @@ namespace prs {
             return true;
         }
 
-        // Tier 2: fallback rule by bank MSB
-        if (const auto fb = fallbacks_.find(msb); fb != fallbacks_.end()) {
-            const FallbackRule& r = fb->second;
-            dm = r.dst_msb;
-            dl = r.dst_lsb;
-            switch (r.pc_mode) {
-            case PcMode::Keep:  dp = pc;          break;
-            case PcMode::Fixed: dp = r.fixed_pc;  break;
-            }
-            return true;
-        }
-
         // No rule — pass through unchanged
         return false;
     }
@@ -120,7 +75,6 @@ namespace prs {
     // =========================================================
     void VoiceRemap::clear_all() {
         entries_.clear();
-        fallbacks_.clear();
         montage_ = MontageConfig{};
         name_.clear();
         description_.clear();
@@ -265,7 +219,6 @@ namespace prs {
     //    @name <free text>                       profile name (for UI)
     //    @description <free text>                longer description
     //    @montage enabled=<bool> channel_remap=<bool> redirect_chorus_to_variation=<bool>
-    //    @fallback bank=<n> dst_msb=<n> dst_lsb=<n> pc_mode=keep|fixed [fixed_pc=<n>]
     //
     //  Entry lines (no @):
     //    <sm> <sl> <sp> -> <dm> <dl> <dp> # description
@@ -343,9 +296,6 @@ namespace prs {
 
     bool VoiceRemap::load_profile_from_text(std::string_view text) {
         clear_all();
-        // Always start with the built-in fallback rules; the file can
-        // override them via @fallback lines.
-        load_default_fallbacks();
 
         bool ok = true;
         std::size_t line_no = 0;
@@ -387,45 +337,6 @@ namespace prs {
                         montage_.channel_remap = parse_bool(v);
                     if (!(v = consume_kv(sv, "redirect_chorus_to_variation")).empty())
                         montage_.redirect_chorus_to_variation = parse_bool(v);
-                }
-                else if (dir == "fallback") {
-                    // @fallback bank=8 dst_msb=0 dst_lsb=0 pc_mode=keep
-                    // @fallback bank=126 dst_msb=127 dst_lsb=0 pc_mode=fixed fixed_pc=1
-                    std::string_view sv = rest;
-                    std::string_view v;
-                    u8 bank = 0, dst_msb = 0, dst_lsb = 0, fixed_pc = 0;
-                    bool got_bank = false, got_msb = false, got_lsb = false;
-                    bool got_pc_mode = false;
-                    bool is_fixed = false;
-                    if (!(v = consume_kv(sv, "bank")).empty())    got_bank = parse_u8_view(v, bank);
-                    if (!(v = consume_kv(sv, "dst_msb")).empty()) got_msb = parse_u8_view(v, dst_msb);
-                    if (!(v = consume_kv(sv, "dst_lsb")).empty()) got_lsb = parse_u8_view(v, dst_lsb);
-                    if (!(v = consume_kv(sv, "pc_mode")).empty()) {
-                        got_pc_mode = true;
-                        char buf[8] = {};
-                        std::size_t n = std::min<std::size_t>(v.size(), 8);
-                        for (std::size_t i = 0; i < n; ++i) {
-                            char c = v[i];
-                            if (c >= 'A' && c <= 'Z') c = static_cast<char>(c - 'A' + 'a');
-                            buf[i] = c;
-                        }
-                        std::string_view lo(buf, n);
-                        if (lo == "fixed") is_fixed = true;
-                        else if (lo != "keep") got_pc_mode = false;
-                    }
-                    if (!(v = consume_kv(sv, "fixed_pc")).empty()) parse_u8_view(v, fixed_pc);
-                    if (got_bank && got_msb && got_lsb && got_pc_mode) {
-                        FallbackRule r;
-                        r.dst_msb = dst_msb;
-                        r.dst_lsb = dst_lsb;
-                        r.pc_mode = is_fixed ? PcMode::Fixed : PcMode::Keep;
-                        r.fixed_pc = is_fixed ? fixed_pc : 0;
-                        set_fallback(bank, r);
-                    }
-                    else {
-                        std::cerr << std::format("[remap] line {}: bad @fallback\n", line_no);
-                        ok = false;
-                    }
                 }
                 else {
                     std::cerr << std::format("[remap] line {}: unknown directive '@{}'\n",
@@ -477,8 +388,8 @@ namespace prs {
     //  Diagnostics
     // =========================================================
     void VoiceRemap::dump() const {
-        std::cout << std::format("[REMAP] {} explicit entries, {} fallback rules\n",
-            entries_.size(), fallbacks_.size());
+        std::cout << std::format("[REMAP] {} explicit entries\n",
+            entries_.size());
         std::cout << std::format("  name:        '{}'\n", name_);
         std::cout << std::format("  description: '{}'\n", description_);
         std::cout << std::format("  source:      '{}'\n", source_path_.string());
@@ -492,16 +403,6 @@ namespace prs {
                 e.src_msb, e.src_lsb, e.src_pc,
                 e.dst_msb, e.dst_lsb, e.dst_pc,
                 e.desc);
-        }
-
-        std::cout << "  Fallback rules:\n";
-        for (const auto& [msb, rule] : fallbacks_) {
-            const char* mode = (rule.pc_mode == PcMode::Keep) ? "KEEP" : "FIXED";
-            std::cout << std::format("    bank {} -> {}/{}/{}",
-                msb, rule.dst_msb, rule.dst_lsb, mode);
-            if (rule.pc_mode == PcMode::Fixed)
-                std::cout << std::format("={}", rule.fixed_pc);
-            std::cout << '\n';
         }
     }
 

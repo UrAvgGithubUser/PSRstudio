@@ -4,8 +4,7 @@
 // Uses std::unordered_map for O(1) lookups with no fixed capacity.
 //
 // Remaps can be added at runtime via add(), loaded from a text file via
-// load_from_file(), or edited by a UI. Tier-2 fallback rules (per-bank-MSB
-// defaults) are also configurable.
+// load_from_file(), or edited by a UI.
 //
 // MONTAGE ESP VST mode is integrated: the remap module owns the MONTAGE
 // file is a complete destination-synth profile.
@@ -16,7 +15,6 @@
 //   @montage  on
 //   @chorus_redirect  on
 //   @fold  9->1  10->2  11->3  12->4  13->5  14->6  15->7  16->8
-//   @tier2  src_msb  ->  dst_msb  dst_lsb  dst_pc
 #pragma once
 
 #include "style.hpp"  // for prs::RemapSource, prs::RemapEntry, prs::u8
@@ -43,8 +41,8 @@ namespace prs {
 // =========================================================
 class VoiceRemap final : public RemapSource {
 public:
-    // Constructs with only the fallback rules (no voice remapping)
-    // AND MONTAGE mode disabled (for hardware MIDI / GM soundfonts).
+    // Constructs empty: no voice remapping (voices pass through
+    // unchanged) AND MONTAGE mode disabled.
     VoiceRemap();
 
     ~VoiceRemap() override = default;
@@ -62,38 +60,23 @@ public:
     void clear();
     [[nodiscard]] std::size_t size() const noexcept { return entries_.size(); }
 
-    // ----- Tier-2 fallback rules -----
-    enum class PcMode : u8 { Keep, Fixed };
-
-    struct FallbackRule {
-        u8     dst_msb;
-        u8     dst_lsb;
-        PcMode pc_mode;
-        u8     fixed_pc;
-    };
-
-    void set_fallback(u8 src_msb, FallbackRule rule);
-    void remove_fallback(u8 src_msb);
-    void clear_fallbacks();
-    [[nodiscard]] std::size_t fallback_count() const noexcept { return fallbacks_.size(); }
-
     // ----- Legacy file loading (entries only, no metadata) -----
     // Parses the simple "8 0 1 -> 0 0 1 # desc" format. Does NOT
-    // touch existing entries, fallbacks, or MONTAGE config — only
-    // appends new entries. Use load_profile_from_text() for the
+    // touch existing entries or MONTAGE config — only appends new
+    // entries. Use load_profile_from_text() for the
     // full format that replaces state.
     std::size_t load_from_file(const std::filesystem::path& path);
     std::size_t load_from_text(std::string_view text);
 
     // ----- Profile loading (full .remap format) -----
     // Parses a complete .remap profile: @name, @description,
-    // @montage config, @fallback rules, and explicit voice entries.
-    // REPLACES the current state (entries, fallbacks, MONTAGE config,
-    // metadata). Returns true on success.
+    // @montage config, and explicit voice entries.
+    // REPLACES the current state (entries, MONTAGE config, metadata).
+    // Returns true on success.
     bool load_profile_from_file(const std::filesystem::path& path);
     bool load_profile_from_text(std::string_view text);
 
-    // Clear everything: entries, fallbacks, MONTAGE config,
+    // Clear everything: entries, MONTAGE config,
     // metadata. Returns the object to a pristine empty state.
     void clear_all();
 
@@ -160,10 +143,8 @@ private:
                 static_cast<std::uint32_t>(pc);
     }
 
-    void load_default_fallbacks();
 
     std::unordered_map<std::uint32_t, RemapEntry> entries_;
-    std::unordered_map<std::uint8_t, FallbackRule> fallbacks_;
 
     MontageConfig                montage_{};
     std::string                  name_;
