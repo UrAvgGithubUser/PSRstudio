@@ -2,11 +2,13 @@
 
 # PSRstudio
 
-**A style-file arranger player for Windows — play Yamaha-style accompaniments through any MIDI destination or a SoundFont synth.**
+**A realtime software arranger, using Yamaha SFF2 Style files to provide auto-accompaniment by following the chords you play.**
 
 </div>
 
 ---
+
+## IMPORTANT 
 
 ## What is it?
 
