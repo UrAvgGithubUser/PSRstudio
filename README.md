@@ -2,17 +2,19 @@
 
 # PSRstudio
 
-**A realtime software arranger, using Yamaha SFF2 Style files to provide auto-accompaniment by following the chords you play.**
+**A real-time software arranger, using Yamaha SFF2 Style files to provide auto-accompaniment by following the chords you play.**
 
 </div>
 
 ---
 
-## IMPORTANT 
+## IMPORTANT NOTICE
+
+PSRstudio was developed ALMOST ENTIRELY with a combination of Claude, Deepseek and Z.ai. As such, expect the code base to a maze of terribly written, unoptimized and sloppy code. I'm planning to refactor the code properly one day when I actually learn C++. I apologize in advance for the vibe-coded nature of the app.
 
 ## What is it?
 
-PSRstudio plays Yamaha style files (`.sty`, `.prs`, `.bcs`, `.sst`, `.pst`) and Standard MIDI files the way an arranger keyboard does: you play chords on a MIDI keyboard, and the style's accompaniment tracks — drums, bass, chords, pads, phrases — follow along in real time, transposed and re-voiced to match every chord you play.
+PSRstudio is a arranger software, similar to vArranger2, Giglad and One Man Band. Load a Yamaha style file (.sty/.prs/.sst/etc.), and PSRstudio provides auto-accompaniment by transposing the notes in real-time to match the chords you're playing, just like a physical arranger keyboard like the Yamaha Genos and PSR series keyboards.
 
 Built with **Qt 6** and **C++20**, with **FluidSynth** for SoundFont playback and WinMM for hardware MIDI devices.
 
@@ -23,7 +25,7 @@ Built with **Qt 6** and **C++20**, with **FluidSynth** for SoundFont playback an
 - **Real-time transposition** — per-channel NTR/NTT engine (Root Transposition, Root Fixed, Guitar), SFF2 three-range support, note limits, high key, slash-chord (named bass) support
 - **Mixer** — 16 channel strips with volume, pan, reverb, chorus, mute and solo; per-channel voice selection from a `voices.csv` library
 - **MegaVoice aware** — detects MegaVoice styles (bank MSB=8) and handles their position-sensitive articulation samples correctly; optional *Patch MegaVoices* mode silences them entirely for non-MegaVoice sound sources
-- **Remap profiles** — `.remap` text files that translate voice addresses between keyboards, with per-profile MONTAGE settings
+- **Remap profiles** — `.remap` text files that translate voice addresses between keyboards.
 - **Two synth backends** — hardware MIDI out (WinMM) or FluidSynth with any `.sf2`/`.sf3` SoundFont, switchable at runtime
 - **Customizable mixer artwork** — drop your own knob/slider images into a folder, no rebuild needed
 
