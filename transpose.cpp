@@ -239,8 +239,7 @@ constexpr std::array<int, 35> kTypeThird = {
 //  the SOURCE chord's third (resp. sixth) degree is re-targeted to the
 //  DESTINATION chord's same degree; every other note keeps its
 //  root-shifted pitch. The _5 variants use the same algorithm — the
-//  spec describes no separate behavior for them (the old scale-snap
-//  interpretation over-adapted and is retired).
+//  spec describes no separate behavior for them.
 // =========================================================
 [[nodiscard]] int minor_adapt(int shifted_pitch, int src_root, int src_type,
                               int dst_root, int dst_type, bool sixth_too) noexcept {

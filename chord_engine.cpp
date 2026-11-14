@@ -53,7 +53,7 @@ ActiveChord g_active_chord;
 // =========================================================
 //  Chord template table
 //
-//  Matching is REQUIRED-TONE SUBSET matching (Yamaha/Cadenza style):
+//  Matching is REQUIRED-TONE SUBSET matching (Yamaha style):
 //    - every held pitch class must be a chord tone of the template
 //      (omitted tones are allowed — a 5th-less voicing still matches),
 //    - every "required" interval of the template must be held
@@ -141,8 +141,8 @@ constexpr std::array<ChordTemplate, 37> kChordTableFull = {{
       static_cast<std::uint16_t>(iv_bit(4) | iv_bit(6) | iv_bit(11)) },
     // 3 pitch classes (2 intervals) — the MINIMUM in fingered mode.
     // There is deliberately no 1-interval (2-key) row: fingered-mode
-    // detection requires >= 3 held keys (see match_root), matching both
-    // the old exact-match engine and Cadenza/Cadenza's min-3 rule.
+    // detection requires >= 3 held keys (see match_root) — the min-3
+    // rule.
     { {{4, 7, 0, 0, 0, 0}},   2, ChordType::Maj,     "",        5,
       iv_bit(4) },
     { {{3, 7, 0, 0, 0, 0}},   2, ChordType::Min,     "m",       5,
@@ -268,10 +268,9 @@ int match_root(const std::array<u8, kMaxChordNotes>& pcs, int npc, int root,
     }
 
     // Fingered mode requires at least 2 INTERVALS (>= 3 held keys).
-    // 1-2 key sets never classify here — they hold the previous chord,
-    // exactly like the old exact-match engine (and Cadenza's min-3
-    // rule). Without this gate, every passing two-finger moment would
-    // publish a thin partial chord and retrigger the band.
+    // 1-2 key sets never classify here — they hold the previous chord.
+    // Without this gate, every passing two-finger moment would publish
+    // a thin partial chord and retrigger the band.
     if (niv < 2) return -1;
 
     int best = -1;

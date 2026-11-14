@@ -1,25 +1,23 @@
 // midi_output.hpp — WinMM MIDI output with ring buffer + output thread.
 //
-// C++20 rewrite of midi.c. Key changes vs. the original C code:
+// Design notes:
 //
-// * All globals (g_midi_out, g_ring, g_ring_w/r, g_sx_event, g_setup_*, ...)
-//   are now private instance members of WinMidiOutput. Multiple outputs
-//   can coexist (e.g. one for style playback, one for metronome).
+// * All state is private instance members of WinMidiOutput. Multiple
+//   outputs can coexist (e.g. one for style playback, one for metronome).
 //
 // * WinMidiOutput implements prs::MidiSink, so the parser and the channel
 //   model can drive it directly with no adapter.
 //
 // * The output thread is a std::jthread (auto-joins on destruction) and
-//   uses a condition_variable to wake on push instead of Sleep(1) polling.
+//   uses a condition_variable to wake on push.
 //
 // * The WinMM callback is a static thunk that recovers `this` from
 //   dwCallbackInstance and dispatches to a member function.
 //
 // * RAII: destructor stops the thread and closes the port.
 //
-// * Lock-free SPSC ring preserved (single producer = player thread,
-//   single consumer = output thread). std::atomic<LONG> replaces
-//   InterlockedIncrement / _WriteBarrier.
+// * Lock-free SPSC ring (single producer = player thread, single
+//   consumer = output thread), driven by std::atomic<LONG> operations.
 //
 // Public API:
 //   WinMidiOutput out;

@@ -403,7 +403,7 @@ protected:
 
         p.setRenderHint(QPainter::Antialiasing);
 
-        // Dark rounded panel — the same box the old QSS rule drew.
+        // Dark rounded panel.
         p.setPen(QPen(QColor(0x30, 0x36, 0x3d), 1));
         p.setBrush(QColor(0x16, 0x1b, 0x22));
         p.drawRoundedRect(rect().adjusted(0, 0, -1, -1), 4, 4);
@@ -2746,11 +2746,10 @@ void MainWindow::rebuildPartNames() {
 //  voiceIndexFor — which voices.csv entry is channel `ch` using?
 //
 //  Matched by MSB / LSB / PC against the model's voice, via the
-//  prebuilt voice_by_addr_ hash map (O(1) lookup instead of a scan of
-//  the whole list — this used to run 16 x ~2800 comparisons per
-//  refresh tick). If several entries share the same address, the one
-//  the user last picked for this channel wins (when it still matches);
-//  otherwise the first in CSV order.
+//  prebuilt voice_by_addr_ hash map (O(1) lookup). If several entries
+//  share the same address, the one the user last picked for this
+//  channel wins (when it still matches); otherwise the first in CSV
+//  order.
 // =========================================================
 int MainWindow::voiceIndexFor(int ch, const chmodel::Channel& c) const {
     const auto key = static_cast<std::uint32_t>(

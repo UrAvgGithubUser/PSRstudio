@@ -1,5 +1,5 @@
 // midi_output.cpp — WinMM MIDI output with ring buffer + output thread.
-// C++20 rewrite of midi.c. See midi_output.hpp for design notes.
+// See midi_output.hpp for design notes.
 
 #include "midi_output.hpp"  // pulls in <windows.h> + <mmsystem.h> on Windows
 

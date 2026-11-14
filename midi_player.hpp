@@ -1,12 +1,11 @@
 // midi_player.hpp — Self-contained Standard MIDI File player.
 //
-// C++20 rewrite of midi_player.c. Key improvements:
+// Design notes:
 //
-// * Reuses prs::ByteReader for SMF parsing (no duplicated be32/be16/vlq).
-// * Stores events in its own std::vector (no global g_events[] sharing).
-// * Uses std::chrono for timing (no QPC dependency).
-// * Uses midi::WinMidiOutput for all MIDI output (no midi_short/midi_sysex
-//   globals, no ring_push_short).
+// * Reuses prs::ByteReader for SMF parsing.
+// * Stores events in its own std::vector.
+// * Uses std::chrono for timing.
+// * Uses midi::WinMidiOutput for all MIDI output.
 // * Position state (measure/beat/loop) exposed via atomic members for
 //   lock-free UI polling.
 // * RAII: destructor stops playback and releases resources.

@@ -6,8 +6,7 @@
 //   3. Implements prs::MidiSink so it's a drop-in replacement for
 //      fluidsynth::FluidSynthOutput (the existing Qt code can switch
 //      to AudioEngine with one line).
-//   4. Includes a master DSP chain (3-band EQ + brickwall limiter)
-//      ported from Cadenza's MasterEq + PolishedMaster.
+//   4. Includes a master DSP chain (3-band EQ + brickwall limiter).
 //   5. Is structured so VST hosting can be added later without
 //      changing the public API (just add juce::AudioPluginFormatManager
 //      inside the Pimpl).

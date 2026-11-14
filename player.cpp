@@ -985,7 +985,7 @@ void Player::process_chord_change(const prs::PrsStyle& style,
 
     pending_rtr_.clear();
 
-    // Sustain threshold (Cadenza-style, cf. its revoiceActiveNotes): a
+    // Sustain threshold: a
     // held note whose matching note-off lies LESS than one beat ahead is
     // about to end on its own — re-articulating it mid-decay is an
     // audible blip that buys nothing. Notes with a beat or more of life

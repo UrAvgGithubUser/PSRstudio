@@ -23,7 +23,7 @@ namespace audio_engine {
 // =========================================================
 //  Master DSP — biquad filters + brickwall limiter
 //
-//  Ported from Cadenza's MasterEq + PolishedMaster (pure C++,
+//  Master DSP chain (pure C++,
 //  real-time safe). Transposed Direct Form II biquads.
 // =========================================================
 namespace dsp {
@@ -99,7 +99,6 @@ Biquad makeHighShelf(float sampleRate, float freqHz, float gainDb) noexcept {
 }
 
 // Simple brickwall limiter with instantaneous attack and exponential release.
-// Inspired by Cadenza's PolishedMaster limiter stage.
 struct Limiter {
     // Atomic so the UI thread can update it while the audio thread runs.
     std::atomic<float> ceiling{0.97f};   // linear (0.97 ≈ -0.27 dBFS)

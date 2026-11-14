@@ -72,7 +72,7 @@ enum class ChordType : u8 {
     Sus4_7,         // 7sus4            {5,7,10}
     Min9,           // minor 9th        {3,7,10,2}
     Maj9,           // major 9th        {4,7,11,2}
-    // --- Extended vocabulary (Yamaha/Cadenza set) ---
+    // --- Extended vocabulary (Yamaha set) ---
     Min7b5,         // half-diminished  {3,6,10}
     Dom7b5,         // 7 flat 5         {4,6,10}
     Dom7s11,        // 7 sharp 11       {2,4,6,7,10}

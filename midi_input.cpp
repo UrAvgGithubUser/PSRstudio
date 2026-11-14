@@ -1,5 +1,5 @@
 // midi_input.cpp — WinMM MIDI input wiring for the chord detection engine.
-// C++20 rewrite of midi_in.c. See midi_input.hpp for design notes.
+// See midi_input.hpp for design notes.
 
 #include "midi_input.hpp"
 

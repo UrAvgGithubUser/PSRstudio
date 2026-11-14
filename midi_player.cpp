@@ -1,5 +1,5 @@
 // midi_player.cpp — Self-contained Standard MIDI File player.
-// C++20 rewrite of midi_player.c. See midi_player.hpp for design notes.
+// See midi_player.hpp for design notes.
 
 #include "midi_player.hpp"
 #include "midi_output.hpp"

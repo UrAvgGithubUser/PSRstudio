@@ -230,11 +230,9 @@ struct CasmChannel {
     u8          src_root         = 0;
     u8          src_chord_type   = 0;
 
-    // SFF2 three-range support (set middle_low=0 and middle_high=127 for SFF1).
-    // The old fields mid_low_pitch / mid_high_pitch / low / mid / high are
-    // kept for backward compatibility with the existing CASM parser and
-    // player code; the new arranger module accesses them via the new
-    // accessor methods below.
+    // SFF2 three-range support (set middle_low=0 and middle_high=127 for
+    // SFF1). The middle pair aliases ctb2_middle_low/high_pitch; the three
+    // NoteRanges mirror ctb2_low / ctb2_main / ctb2_high.
     u8          mid_low_pitch    = 0;       // alias for ctb2_middle_low_pitch
     u8          mid_high_pitch   = 127;     // alias for ctb2_middle_high_pitch
     NoteRange   low{}, mid{}, high{};       // ctb2_low / ctb2_main / ctb2_high

@@ -1,13 +1,12 @@
 // midi_input.hpp — WinMM MIDI input wiring for the chord detection engine.
 //
-// C++20 rewrite of midi_in.c. Key changes:
+// Design notes:
 //
-// * All globals (g_engine, g_ring, s_midi_in, etc.) are now instance
-//   members of WinMidiInput. No file-scope globals.
+// * All state lives in WinMidiInput instance members — no file-scope
+//   globals.
 // * RAII: destructor closes the port.
 // * The WinMM callback is a free function that recovers `this` from
 //   dwCallbackInstance and dispatches to the ChordEngine.
-// * Uses chord::ChordEngine (already converted) instead of the C struct.
 // * Port enumeration returns a vector (like WinMidiOutput::enumerate_ports).
 //
 // Thread safety:
