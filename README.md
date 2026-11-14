@@ -8,6 +8,7 @@
 
 ---
 
+
 ## IMPORTANT NOTICE
 
 PSRstudio was developed ALMOST ENTIRELY with a combination of Claude, Deepseek and Z.ai. As such, expect the code base to a maze of terribly written, unoptimized and sloppy code. I'm planning to refactor the code properly one day when I actually learn C++. I apologize in advance for the vibe-coded nature of the app.
@@ -20,16 +21,16 @@ Built with **Qt 6** and **C++20**, with **FluidSynth** for SoundFont playback an
 
 ## Features
 
-- **Style playback** — full accompaniment engine with Intro / Main / Fill In / Break / Ending sections, auto-fill, tempo control and section switching on the barline
-- **Live chord tracking** — play chords on any MIDI input device; the whole band follows. Fingered and single-finger recognition modes, configurable split point
-- **Real-time transposition** — per-channel NTR/NTT engine (Root Transposition, Root Fixed, Guitar), SFF2 three-range support, note limits, high key, slash-chord (named bass) support
-- **Mixer** — 16 channel strips with volume, pan, reverb, chorus, mute and solo; per-channel voice selection from a `voices.csv` library
-- **MegaVoice aware** — detects MegaVoice styles (bank MSB=8) and handles their position-sensitive articulation samples correctly; optional *Patch MegaVoices* mode silences them entirely for non-MegaVoice sound sources
-- **Remap profiles** — `.remap` text files that translate voice addresses between keyboards.
-- **Two synth backends** — hardware MIDI out (WinMM) or FluidSynth with any `.sf2`/`.sf3` SoundFont, switchable at runtime
-- **Customizable mixer artwork** — drop your own knob/slider images into a folder, no rebuild needed
+- **Style playback** — Support for SFF2 and SFF GE Styles, and rudimentary support for Ketron and Korg style.
+- **MIDI playback** — Play back MIDI files (.mid) with the selected Synth backend,
+- **Live chord tracking** — Fingered and single-finger chord recognition modes along with a configurable split point.
+- **Real-time transposition** — Transposes the notes according to CASM and transposition rules.
+- **Mixer** — Mix and master each channel.
+- **MegaVoice support** — Detects MegaVoice styles, and plays them properly on supported keyboards. Can be patched to fix how they sound on unsupported MIDI hardware or Soundfonts.
+- **Remap profiles** — Configurable `.remap` file, allowing you to create a remap table for your own Synth backend, making styles play back accurately. 
+- **Two synth backends** — Hardware MIDI out or FluidSynth with any SoundFont.
 
-## Building
+## Building instructions
 
 ### Prerequisites
 
@@ -70,10 +71,6 @@ PSRstudio keeps its user data in `Documents\PSRstudio\`:
 | `remaps\*.remap` | Remap profiles: voice/bank/PC translation tables + MONTAGE settings, selectable in the UI |
 | `mixer\*.png` | Optional custom artwork for the mixer knobs and sliders (replaces the built-in art) |
 | `PSRstudio.ini` | All settings (backend, ports, mixer state, last style) — saved automatically |
-
-### MegaVoice styles
-
-Yamaha MegaVoice voices (bank MSB=8) contain real guitar articulations — fret noise, slides, harmonics — mapped to specific notes at C6 and above. PSRstudio detects MegaVoice styles automatically and **never transposes those notes out of their sample range**. Sound sources without MegaVoice support can enable **Patch MegaVoices** to silence those notes instead.
 
 ## Project layout
 
